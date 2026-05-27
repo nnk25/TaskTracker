@@ -3,10 +3,15 @@ import TaskDashboard from "../components/organisms/TaskDashboard/TaskDashboard";
 import TaskTableOrganism from "../components/organisms/TaskTable/TaskTable";
 import AuthButton from "../components/molecules/AuthButton";
 import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function TasksPage() {
+export default async function TasksPage() {
+  const session = await auth()
+  if (!session?.user?.id) redirect('/signin')
+
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       <div className="min-h-screen p-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4">
