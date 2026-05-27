@@ -9,7 +9,7 @@ export default function SignInPage() {
       <div style={{ textAlign: "center", padding: 24, borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.08)" }}>
         <h1 style={{ margin: 0, marginBottom: 8 }}>TaskTracker</h1>
         <button
-          onClick={() => signIn("github")}
+          onClick={() => signIn("github", {redirectTo:"/tasks"})}
           style={{
             background: "#24292f",
             color: "#fff",
