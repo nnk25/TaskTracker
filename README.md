@@ -1,3 +1,59 @@
+# TaskTracker
+
+Very small task tracking app (Next.js + Prisma + NextAuth).
+
+## Project overview
+- Frontend: Next.js app in the `app/` folder
+- API routes under `app/api/` using Prisma for DB access
+- Authentication with `next-auth`
+
+## Local setup
+1. Install dependencies
+
+```bash
+pnpm install
+```
+
+2. Create a `.env` file in the project root with the required environment variables (see below).
+
+3. Generate Prisma client
+
+```bash
+pnpm prisma generate
+```
+
+4. (Optional) Run migrations (if you have migrations):
+
+```bash
+pnpm prisma migrate dev
+```
+
+5. Run the development server
+
+```bash
+pnpm dev
+```
+
+## Required environment variables
+Add the following to your `.env` (example values shown):
+
+```
+DATABASE_URL="postgresql://user:pass@localhost:5432/taskdb"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="a_long_random_secret"
+GITHUB_ID="your_github_oauth_client_id"
+GITHUB_SECRET="your_github_oauth_client_secret"
+```
+
+## Useful scripts
+- `pnpm dev` — start Next.js in development
+- `pnpm build` — build for production
+- `pnpm start` — start production server
+- `pnpm lint` — run ESLint
+
+## Notes
+- The project uses Prisma client generated under `app/generated/prisma`.
+- If you update the Prisma schema, run `pnpm prisma generate` again.
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

@@ -16,20 +16,31 @@ export default function TaskDashboard() {
 
   useEffect(() => {
     let mounted = true;
+
     async function load() {
       setLoading(true);
       try {
         const res = await fetch("/api/tasks");
         if (!res.ok) throw new Error("Failed to fetch tasks");
-        const data = await res.json();
+
+        // Typed the parsed JSON to remove the implicit `any`
+        const data = (await res.json()) as Task[];
         if (mounted) setTasks(data);
-      } catch (err: any) {
-        setError(err?.message ?? "Failed to load tasks");
+      } catch (err: unknown) {
+        // Narrowed the unknown type to safely access the error message
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to load tasks");
+        }
       } finally {
         if (mounted) setLoading(false);
       }
     }
-    load();
+
+    // Explicitly marked the promise as ignored
+    void load();
+
     return () => {
       mounted = false;
     };
@@ -42,6 +53,37 @@ export default function TaskDashboard() {
   const overdue = tasks.filter(
     (t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "DONE",
   );
+
+  // Extracted logic to resolve the nested conditional warning
+  const renderOverdueTasks = () => {
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
+    if (overdue.length === 0) {
+      return <div className="text-sm text-gray-500">No overdue tasks</div>;
+    }
+
+    return (
+      <ul className="space-y-2">
+        {overdue.map((t) => (
+          <li key={t.id} className="p-3 border rounded bg-red-50">
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="font-semibold">{t.title}</div>
+                {t.dueDate && (
+                  <div className="text-sm text-gray-600">
+                    Due {new Date(t.dueDate).toLocaleString()}
+                  </div>
+                )}
+              </div>
+              <div className="text-sm text-red-600 font-semibold">Overdue</div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <section className="mb-6">
@@ -68,31 +110,7 @@ export default function TaskDashboard() {
 
       <div>
         <h3 className="font-medium mb-2">Overdue Tasks</h3>
-        {loading ? (
-          <div>Loading...</div>
-        ) : overdue.length === 0 ? (
-          <div className="text-sm text-gray-500">No overdue tasks</div>
-        ) : (
-          <ul className="space-y-2">
-            {overdue.map((t) => (
-              <li key={t.id} className="p-3 border rounded bg-red-50">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="font-semibold">{t.title}</div>
-                    {t.dueDate && (
-                      <div className="text-sm text-gray-600">
-                        Due {new Date(t.dueDate).toLocaleString()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-sm text-red-600 font-semibold">
-                    Overdue
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        {renderOverdueTasks()}
       </div>
     </section>
   );

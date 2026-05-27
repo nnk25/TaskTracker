@@ -3,18 +3,17 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
 import TaskForm from "./TaskForm";
-
-type Task = any;
+import type { TaskModel } from "../../generated/prisma/models/Task";
 
 export default function EditTaskModal({
   task,
   onClose,
   onUpdated,
-}: {
-  task: Task;
+}: Readonly<{
+  task: TaskModel;
   onClose: () => void;
-  onUpdated: (t: Task) => void;
-}) {
+  onUpdated: (t: TaskModel) => void;
+}>) {
   const [saving, setSaving] = useState(false);
 
   const submit = async (values: {
@@ -34,15 +33,18 @@ export default function EditTaskModal({
         credentials: "same-origin",
       });
       if (!res.ok) {
-        const b = await res.json().catch(() => ({}));
+        const b = (await res.json().catch(() => ({}))) as { error?: string };
         alert(b?.error || "Update failed");
         setSaving(false);
         return;
       }
-      const updated = await res.json();
+      const updated = (await res.json()) as TaskModel;
       onUpdated(updated);
     } catch (err) {
-      alert("Network error");
+      // handle and surface the error
+      console.error(err);
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(msg || "Network error");
     } finally {
       setSaving(false);
     }

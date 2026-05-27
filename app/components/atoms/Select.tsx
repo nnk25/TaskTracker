@@ -8,7 +8,7 @@ export default function Select({
   className = "",
   children,
   ...props
-}: SelectProps) {
+}: Readonly<SelectProps>) {
   return (
     <select className={className} {...props}>
       {children}

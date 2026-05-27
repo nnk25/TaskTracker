@@ -11,7 +11,7 @@ export default function AuthButton() {
 
   const handleClick = () => {
     if (session) {
-      signOut({ callbackUrl: "/signin" });
+      void signOut({ callbackUrl: "/signin" });
     } else {
       router.push("/signin");
     }

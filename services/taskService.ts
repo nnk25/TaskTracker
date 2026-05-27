@@ -39,7 +39,9 @@ export async function getTasksByUserId(
     };
   },
 ): Promise<Task[]> {
-  const where: any = { userId };
+  // Utilizing Prisma's generated types to replace 'any'
+  const where: Prisma.TaskWhereInput = { userId };
+
   if (options?.status) where.status = options.status;
   if (options?.priority) where.priority = options.priority;
   if (options?.search) {
@@ -65,9 +67,14 @@ export async function updateTask(
   id: number,
   data: UpdateTaskInput,
 ): Promise<Task> {
-  const payload: any = { ...data };
-  if (data.dueDate !== undefined)
-    payload.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+  // Destructure dueDate to safely assign it to a typed Prisma payload
+  const { dueDate, ...restData } = data;
+  const payload: Prisma.TaskUpdateInput = { ...restData };
+
+  if (dueDate !== undefined) {
+    payload.dueDate = dueDate ? new Date(dueDate) : null;
+  }
+
   return prisma.task.update({ where: { id }, data: payload });
 }
 

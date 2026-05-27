@@ -6,7 +6,15 @@ import Button from "../../atoms/Button";
 import EditTaskModal from "../../molecules/EditTaskModal";
 import NewTaskModal from "../../molecules/NewTaskModal";
 
-type Task = any;
+// Exported so you can import it in TaskRow, EditTaskModal, etc.
+export interface Task {
+  id: number | string;
+  title: string;
+  description?: string;
+  priority?: string;
+  status?: string;
+  due?: string;
+}
 
 export default function TaskTableOrganism() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -24,13 +32,15 @@ export default function TaskTableOrganism() {
         setError("Not authenticated. Please sign in.");
         setTasks([]);
       } else if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
         setError(body?.error || "Failed to load tasks");
       } else {
-        const data = await res.json();
+        const data = (await res.json()) as Task[];
         setTasks(data || []);
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      // Explicitly typed as unknown to prevent implicit 'any'
+      console.error("Failed to fetch tasks:", err);
       setError("Network error");
     } finally {
       setLoading(false);
@@ -38,7 +48,7 @@ export default function TaskTableOrganism() {
   };
 
   useEffect(() => {
-    fetchTasks();
+    void fetchTasks();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -49,12 +59,13 @@ export default function TaskTableOrganism() {
         credentials: "same-origin",
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
         alert(body?.error || "Delete failed");
         return;
       }
       setTasks((t) => t.filter((x) => Number(x.id) !== Number(id)));
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error("Failed to delete task:", err);
       alert("Network error");
     }
   };
@@ -100,7 +111,7 @@ export default function TaskTableOrganism() {
           <tbody>
             {tasks.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={6} className="px-4 py-6 text-center text-gray-500">
                   No tasks found
                 </td>
               </tr>
@@ -109,8 +120,11 @@ export default function TaskTableOrganism() {
               <TaskRow
                 key={task.id}
                 task={task}
-                onEdit={(t) => setEditing(t)}
-                onDelete={handleDelete}
+                // Explicitly typed parameters prevent upstream 'any' bleeding
+                onEdit={(t: Task) => setEditing(t)}
+                onDelete={(id: number) => {
+                  void handleDelete(id);
+                }}
               />
             ))}
           </tbody>

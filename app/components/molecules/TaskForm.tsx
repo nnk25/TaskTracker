@@ -28,16 +28,16 @@ export default function TaskForm({
   submitLabel = "Save",
   submitting = false,
   onCancel,
-}: Props) {
+}: Readonly<Props>) {
   const [title, setTitle] = useState(initial.title || "");
   const [description, setDescription] = useState(initial.description || "");
   const [priority, setPriority] = useState(initial.priority || "MEDIUM");
   const [status, setStatus] = useState(initial.status || "TODO");
   const [dueDate, setDueDate] = useState(initial.dueDate || "");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit({ title, description, priority, status, dueDate });
+    void onSubmit({ title, description, priority, status, dueDate });
   };
 
   return (

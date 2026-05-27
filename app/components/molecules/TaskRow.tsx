@@ -3,7 +3,14 @@
 import React from "react";
 import Button from "../atoms/Button";
 
-type Task = any;
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  priority?: string;
+  status?: string;
+  dueDate?: string | number | Date;
+}
 
 type Props = {
   task: Task;
@@ -11,7 +18,7 @@ type Props = {
   onDelete: (id: number) => void;
 };
 
-export default function TaskRow({ task, onEdit, onDelete }: Props) {
+export default function TaskRow({ task, onEdit, onDelete }: Readonly<Props>) {
   return (
     <tr className="border-t">
       <td className="px-4 py-2">{task.title}</td>

@@ -7,8 +7,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function TasksPage() {
-  const session = await auth()
-  if (!session?.user?.id) redirect('/signin')
+  const session = await auth();
+  if (!session?.user?.id) redirect("/signin");
 
   return (
     <SessionProvider session={session}>

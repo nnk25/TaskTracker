@@ -19,7 +19,7 @@ export default function SignInCard() {
       <div className="mt-4">
         <Button
           variant="dark"
-          onClick={() => signIn("github", { callbackUrl: "/tasks" })}
+          onClick={() => void signIn("github", { callbackUrl: "/tasks" })}
         >
           Sign in with GitHub
         </Button>

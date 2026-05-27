@@ -4,23 +4,23 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 import TaskForm from "./TaskForm";
 
-type Task = any;
+import type { TaskModel } from "../../generated/prisma/models/Task";
 
 export default function NewTaskModal({
   isOpen,
   onClose,
   onCreated,
-}: {
+}: Readonly<{
   isOpen: boolean;
   onClose: () => void;
-  onCreated: (t: Task) => void;
-}) {
+  onCreated: (t: TaskModel) => void;
+}>) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (values: {
+  const submit = async (values: {
     title: string;
     description: string;
     priority: string;
@@ -38,15 +38,17 @@ export default function NewTaskModal({
         body: JSON.stringify(body),
       });
       if (!res.ok) {
-        const b = await res.json().catch(() => ({}));
-        setError(b?.error || "Failed to create task");
+        const b = (await res.json().catch(() => ({}))) as { error?: string };
+        alert(b?.error || "Create failed");
         setSaving(false);
         return;
       }
-      const created = await res.json();
+      const created = (await res.json()) as TaskModel;
       onCreated(created);
     } catch (err) {
-      setError("Network error");
+      console.error(err);
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(msg || "Network error");
     } finally {
       setSaving(false);
     }
@@ -55,8 +57,7 @@ export default function NewTaskModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="New Task">
       <TaskForm
-        initial={{}}
-        onSubmit={handleSubmit}
+        onSubmit={submit}
         submitLabel="Create"
         submitting={saving}
         onCancel={onClose}
