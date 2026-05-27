@@ -3,7 +3,7 @@
 import React from "react";
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "dark" | "ghost";
+  variant?: "primary" | "dark" | "ghost" | "muted" | "danger";
 };
 
 export default function Button({

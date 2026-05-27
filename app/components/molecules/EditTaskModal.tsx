@@ -55,7 +55,7 @@ export default function EditTaskModal({
       <TaskForm
         initial={{
           title: task.title,
-          description: task.description,
+          description: task.description as string,
           priority: task.priority,
           status: task.status,
           dueDate: task.dueDate

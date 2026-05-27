@@ -2,19 +2,11 @@
 
 import React from "react";
 import Button from "../atoms/Button";
-
-interface Task {
-  id: number;
-  title: string;
-  description?: string;
-  priority?: string;
-  status?: string;
-  dueDate?: string | number | Date;
-}
+import type { Task as TaskModel } from "@/app/generated/prisma/client";
 
 type Props = {
-  task: Task;
-  onEdit: (t: Task) => void;
+  task: TaskModel;
+  onEdit: (t: TaskModel) => void;
   onDelete: (id: number) => void;
 };
 
@@ -22,7 +14,7 @@ export default function TaskRow({ task, onEdit, onDelete }: Readonly<Props>) {
   return (
     <tr className="border-t">
       <td className="px-4 py-2">{task.title}</td>
-      <td className="px-4 py-2">{task.description}</td>
+      <td className="px-4 py-2">{task.description ?? ""}</td>
       <td className="px-4 py-2">{task.priority}</td>
       <td className="px-4 py-2">{task.status}</td>
       <td className="px-4 py-2">

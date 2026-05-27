@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Button from "../atoms/Button";
@@ -21,7 +20,7 @@ export default function AuthButton() {
     <Button
       onClick={handleClick}
       disabled={status === "loading"}
-      variant={session ? "muted" : "primary"}
+      variant={session ? "ghost" : "primary"}
     >
       {session ? "Sign out" : "Sign in"}
     </Button>

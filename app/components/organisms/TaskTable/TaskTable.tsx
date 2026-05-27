@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import type { Priority, Status } from "@/types/task";
 import TaskRow from "../../molecules/TaskRow";
 import Button from "../../atoms/Button";
 import EditTaskModal from "../../molecules/EditTaskModal";
@@ -8,12 +9,15 @@ import NewTaskModal from "../../molecules/NewTaskModal";
 
 // Exported so you can import it in TaskRow, EditTaskModal, etc.
 export interface Task {
-  id: number | string;
+  id: number;
   title: string;
-  description?: string;
-  priority?: string;
-  status?: string;
-  due?: string;
+  description: string | null;
+  priority: Priority;
+  status: Status;
+  dueDate: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
 }
 
 export default function TaskTableOrganism() {
@@ -35,8 +39,15 @@ export default function TaskTableOrganism() {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         setError(body?.error || "Failed to load tasks");
       } else {
-        const data = (await res.json()) as Task[];
-        setTasks(data || []);
+        const data = (await res.json()) as Array<
+          Partial<Task> & { id: string | number }
+        >;
+        setTasks(
+          (data || []).map((task) => ({
+            ...task,
+            id: Number(task.id),
+          })) as Task[],
+        );
       }
     } catch (err: unknown) {
       // Explicitly typed as unknown to prevent implicit 'any'
