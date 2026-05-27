@@ -1,9 +1,5 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <div>
-      <Link href="/tasks">Go to Tasks</Link>
-    </div>
-  );
+export default function Page() {
+  redirect("/tasks/");
 }
