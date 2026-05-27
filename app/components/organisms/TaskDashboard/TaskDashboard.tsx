@@ -1,45 +1,47 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 type Task = {
-  id: number
-  title: string
-  dueDate?: string | null
-  status?: string | null
-}
+  id: number;
+  title: string;
+  dueDate?: string | null;
+  status?: string | null;
+};
 
 export default function TaskDashboard() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
     async function load() {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await fetch('/api/tasks')
-        if (!res.ok) throw new Error('Failed to fetch tasks')
-        const data = await res.json()
-        if (mounted) setTasks(data)
+        const res = await fetch("/api/tasks");
+        if (!res.ok) throw new Error("Failed to fetch tasks");
+        const data = await res.json();
+        if (mounted) setTasks(data);
       } catch (err: any) {
-        setError(err?.message ?? 'Failed to load tasks')
+        setError(err?.message ?? "Failed to load tasks");
       } finally {
-        if (mounted) setLoading(false)
+        if (mounted) setLoading(false);
       }
     }
-    load()
+    load();
     return () => {
-      mounted = false
-    }
-  }, [])
+      mounted = false;
+    };
+  }, []);
 
-  const total = tasks.length
-  const completed = tasks.filter((t) => t.status === 'DONE').length
-  const pending = tasks.filter((t) => t.status !== 'DONE').length
-  const now = new Date()
-  const overdue = tasks.filter((t) => t.dueDate && new Date(t.dueDate) < now && t.status !== 'DONE')
+  const total = tasks.length;
+  const completed = tasks.filter((t) => t.status === "DONE").length;
+  const pending = tasks.filter((t) => t.status !== "DONE").length;
+  const now = new Date();
+  const overdue = tasks.filter(
+    (t) => t.dueDate && new Date(t.dueDate) < now && t.status !== "DONE",
+  );
 
   return (
     <section className="mb-6">
@@ -77,9 +79,15 @@ export default function TaskDashboard() {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="font-semibold">{t.title}</div>
-                    {t.dueDate && <div className="text-sm text-gray-600">Due {new Date(t.dueDate).toLocaleString()}</div>}
+                    {t.dueDate && (
+                      <div className="text-sm text-gray-600">
+                        Due {new Date(t.dueDate).toLocaleString()}
+                      </div>
+                    )}
                   </div>
-                  <div className="text-sm text-red-600 font-semibold">Overdue</div>
+                  <div className="text-sm text-red-600 font-semibold">
+                    Overdue
+                  </div>
                 </div>
               </li>
             ))}
@@ -87,5 +95,5 @@ export default function TaskDashboard() {
         )}
       </div>
     </section>
-  )
+  );
 }

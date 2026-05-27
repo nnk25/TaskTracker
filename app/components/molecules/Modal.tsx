@@ -1,14 +1,19 @@
-import React from 'react'
+import React from "react";
 
 type ModalProps = {
-  isOpen: boolean
-  onClose: () => void
-  title?: string
-  children: React.ReactNode
-}
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
+};
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  if (!isOpen) return null
+export default function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+}: ModalProps) {
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -18,5 +23,5 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
         {children}
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import React from 'react'
-import TaskDashboard from '../components/organisms/TaskDashboard/TaskDashboard'
-import TaskTableOrganism from '../components/organisms/TaskTable/TaskTable'
+import React from "react";
+import TaskDashboard from "../components/organisms/TaskDashboard/TaskDashboard";
+import TaskTableOrganism from "../components/organisms/TaskTable/TaskTable";
 
 export default function TasksPage() {
   return (
@@ -11,5 +11,5 @@ export default function TasksPage() {
         <TaskTableOrganism />
       </div>
     </div>
-  )
+  );
 }

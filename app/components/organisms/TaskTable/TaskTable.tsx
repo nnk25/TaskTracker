@@ -1,78 +1,86 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import TaskRow from '../../molecules/TaskRow'
-import Button from '../../atoms/Button'
-import EditTaskModal from '../../molecules/EditTaskModal'
-import NewTaskModal from '../../molecules/NewTaskModal'
+import React, { useEffect, useState } from "react";
+import TaskRow from "../../molecules/TaskRow";
+import Button from "../../atoms/Button";
+import EditTaskModal from "../../molecules/EditTaskModal";
+import NewTaskModal from "../../molecules/NewTaskModal";
 
-type Task = any
+type Task = any;
 
 export default function TaskTableOrganism() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [editing, setEditing] = useState<Task | null>(null)
-  const [showNew, setShowNew] = useState(false)
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Task | null>(null);
+  const [showNew, setShowNew] = useState(false);
 
   const fetchTasks = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const res = await fetch('/api/tasks', { credentials: 'same-origin' })
+      const res = await fetch("/api/tasks", { credentials: "same-origin" });
       if (res.status === 401) {
-        setError('Not authenticated. Please sign in.')
-        setTasks([])
+        setError("Not authenticated. Please sign in.");
+        setTasks([]);
       } else if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        setError(body?.error || 'Failed to load tasks')
+        const body = await res.json().catch(() => ({}));
+        setError(body?.error || "Failed to load tasks");
       } else {
-        const data = await res.json()
-        setTasks(data || [])
+        const data = await res.json();
+        setTasks(data || []);
       }
     } catch (err) {
-      setError('Network error')
+      setError("Network error");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchTasks()
-  }, [])
+    fetchTasks();
+  }, []);
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Delete this task?')) return
+    if (!confirm("Delete this task?")) return;
     try {
-      const res = await fetch(`/api/tasks?id=${id}`, { method: 'DELETE', credentials: 'same-origin' })
+      const res = await fetch(`/api/tasks?id=${id}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+      });
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        alert(body?.error || 'Delete failed')
-        return
+        const body = await res.json().catch(() => ({}));
+        alert(body?.error || "Delete failed");
+        return;
       }
-      setTasks((t) => t.filter((x) => Number(x.id) !== Number(id)))
+      setTasks((t) => t.filter((x) => Number(x.id) !== Number(id)));
     } catch (err) {
-      alert('Network error')
+      alert("Network error");
     }
-  }
+  };
 
   const handleUpdated = (updated: Task) => {
-    setTasks((list) => list.map((t) => (Number(t.id) === Number(updated.id) ? updated : t)))
-    setEditing(null)
-  }
+    setTasks((list) =>
+      list.map((t) => (Number(t.id) === Number(updated.id) ? updated : t)),
+    );
+    setEditing(null);
+  };
 
   const handleCreated = (created: Task) => {
-    setTasks((list) => [created, ...list])
-    setShowNew(false)
-  }
+    setTasks((list) => [created, ...list]);
+    setShowNew(false);
+  };
 
-  if (loading) return <div>Loading tasks...</div>
-  if (error) return <div className="text-red-600">{error}</div>
+  if (loading) return <div>Loading tasks...</div>;
+  if (error) return <div className="text-red-600">{error}</div>;
 
   return (
     <div>
       <div className="flex justify-end mb-4">
-        <Button className="bg-green-600 px-4 py-2" onClick={() => setShowNew(true)}>
+        <Button
+          className="bg-green-600 px-4 py-2"
+          onClick={() => setShowNew(true)}
+        >
           New Task
         </Button>
       </div>
@@ -98,14 +106,29 @@ export default function TaskTableOrganism() {
               </tr>
             )}
             {tasks.map((task) => (
-              <TaskRow key={task.id} task={task} onEdit={(t) => setEditing(t)} onDelete={handleDelete} />
+              <TaskRow
+                key={task.id}
+                task={task}
+                onEdit={(t) => setEditing(t)}
+                onDelete={handleDelete}
+              />
             ))}
           </tbody>
         </table>
       </div>
 
-      {editing && <EditTaskModal task={editing} onClose={() => setEditing(null)} onUpdated={handleUpdated} />}
-      <NewTaskModal isOpen={showNew} onClose={() => setShowNew(false)} onCreated={handleCreated} />
+      {editing && (
+        <EditTaskModal
+          task={editing}
+          onClose={() => setEditing(null)}
+          onUpdated={handleUpdated}
+        />
+      )}
+      <NewTaskModal
+        isOpen={showNew}
+        onClose={() => setShowNew(false)}
+        onCreated={handleCreated}
+      />
     </div>
-  )
+  );
 }

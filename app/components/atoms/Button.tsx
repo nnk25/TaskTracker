@@ -1,17 +1,28 @@
-import React from 'react'
+"use client";
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'danger' | 'muted'
-  className?: string
-}
+import React from "react";
 
-export default function Button({ variant = 'primary', className = '', children, ...rest }: ButtonProps) {
-  const base = 'px-3 py-1 rounded'
-  const variantCls =
-    variant === 'primary' ? 'bg-blue-600 text-white' : variant === 'danger' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-800'
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: "primary" | "dark" | "ghost";
+};
+
+export default function Button({
+  variant = "primary",
+  className = "",
+  ...props
+}: Props) {
+  const base = "px-4 py-2 rounded cursor-pointer";
+  const variants: Record<string, string> = {
+    primary: "bg-green-600 text-white",
+    dark: "bg-gray-900 text-white",
+    ghost: "bg-transparent",
+  };
   return (
-    <button className={`${base} ${variantCls} ${className}`} {...rest}>
-      {children}
-    </button>
-  )
+    <button
+      className={`${base} ${variants[variant]} ${className}`}
+      {...props}
+    />
+  );
 }
+
+

@@ -1,13 +1,17 @@
-"use client"
+"use client";
 
-import React from 'react'
+import React from "react";
 
-type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement>
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement>;
 
-export default function Select({ className = '', children, ...props }: SelectProps) {
+export default function Select({
+  className = "",
+  children,
+  ...props
+}: SelectProps) {
   return (
     <select className={className} {...props}>
       {children}
     </select>
-  )
+  );
 }
