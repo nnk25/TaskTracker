@@ -1,17 +1,9 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import { getUser } from "./services/userServices"
+import bcrypt from "bcryptjs"
+import GitHub from "next-auth/providers/github"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Credentials({
-    authorize: async (credentials) => {
-                if(!credentials?.username || !credentials?.password) return null
-                const {username, password} = credentials as {username: string, password: string}
-              
-                const user = await getUser(username)
-                console.log(user)
-                return user
-            }
-
-  })]
-  
+  providers: [GitHub]
 })
