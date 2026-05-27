@@ -30,7 +30,7 @@ export default function TaskRow({ task, onEdit, onDelete }: Readonly<Props>) {
         </Button>
         <Button
           variant="danger"
-          className="px-3 py-1"
+          className="px-3 py-1 bg-red-800"
           onClick={() => onDelete(task.id)}
         >
           Delete
